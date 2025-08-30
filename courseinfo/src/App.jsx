@@ -56,8 +56,7 @@ const Content = ({ parts }) => (
 const Part = ({part}) => <p>{part.name} {part.exercises} </p>;
 
 const Total = ({ parts }) => (
-  <p>
-    Number of exercises{" "}
-    {parts.reduce((sum, part) => sum + part.exercises, 0)}
-  </p>
+  <h4>
+    Total of {parts.reduce((sum, part) => sum + part.exercises, 0)} exercises
+  </h4>
 );
