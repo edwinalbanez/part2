@@ -1,14 +1,15 @@
 import { useState } from "react";
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
+  const [persons, setPersons] = useState([{ name: "Arto Hellas", number: "040-1234567" }]);
   const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
 
   const handlerOnSubmit = (event) => {
     event.preventDefault();
 
-    if (newName.trim() === "") {
-      window.alert("The name is empty");
+    if (newName.trim() === "" || newNumber.trim() === "") {
+      window.alert("Complete all fields");
       return
     }
 
@@ -18,7 +19,7 @@ const App = () => {
       window.alert(`${newName} is already in your contacts`);
       return;
     }
-    setPersons(persons.concat({name: newName}));
+    setPersons(persons.concat({name: newName, number: newNumber}));
   }
 
   return (
@@ -26,24 +27,38 @@ const App = () => {
       <h2>Phonebook</h2>
       <form onSubmit={handlerOnSubmit}>
         <div>
-          name: <input value={newName} onChange={({target}) => setNewName(target.value)}  />
+          Name: {" "}
+          <input 
+            value={newName} 
+            onChange={({target}) => setNewName(target.value)}  
+          />
+        </div>
+        <div>
+          Number: {" "}
+          <input 
+            value={newNumber} 
+            onChange={({target}) => setNewNumber(target.value)}  
+          />
         </div>
         <div>
           <button type="submit">add</button>
         </div>
       </form>
 
-      <Contacts numbers={persons}/>
+      <Contacts persons={persons}/>
     </div>
   );
 };
 
-const Contacts = ({numbers}) => {
+const Contacts = ({persons}) => {
   return(
     <>
       <h2>Numbers</h2>
-      {numbers.map(number => 
-        <p key={number.name}> {number.name} </p>
+
+      {persons.map(person => 
+        <p key={person.name}> 
+          {person.name} {person.number}
+        </p>
       )}
     </>
   )
