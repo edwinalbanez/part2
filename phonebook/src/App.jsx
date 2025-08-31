@@ -11,6 +11,13 @@ const App = () => {
       window.alert("The name is empty");
       return
     }
+
+    const repitedPerson = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
+
+    if (repitedPerson) {
+      window.alert(`${newName} is already in your contacts`);
+      return;
+    }
     setPersons(persons.concat({name: newName}));
   }
 
@@ -25,6 +32,7 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
+
       <Contacts numbers={persons}/>
     </div>
   );
