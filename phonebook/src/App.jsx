@@ -1,12 +1,17 @@
 import { useState } from "react";
+import Filter from "./components/Filter";
+import PersonForm from "./components/PersonForm";
+import Persons from "./components/Persons"
 
 const App = () => {
+  
   const [persons, setPersons] = useState([
     { name: "Arto Hellas", number: "040-123456", id: 1 },
     { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
     { name: "Dan Abramov", number: "12-43-234345", id: 3 },
     { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
   ]);
+
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
@@ -15,7 +20,9 @@ const App = () => {
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(filter));
   
-  const handlerOnSubmit = (event) => {
+  const handleChangeFilter = ({target}) => setFilter(target.value.toLowerCase());
+
+  const handlerSubmit = (event) => {
     event.preventDefault();
 
     if (newName.trim() === "" || newNumber.trim() === "") {
@@ -23,9 +30,9 @@ const App = () => {
       return
     }
 
-    const repitedPerson = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
+    const repeatedPerson = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
 
-    if (repitedPerson) {
+    if (repeatedPerson) {
       window.alert(`${newName} is already in your contacts`);
       return;
     }
@@ -39,51 +46,22 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
 
-      <div>
-        Filter shown with: {" "}
-        <input type="text" value={filter} onChange={({target}) => setFilter(target.value.toLowerCase())} />
-      </div>
+      <Filter 
+        filter={filter}
+        onChange={handleChangeFilter}
+      />
 
-      <h2>Add a new</h2>
-      <form onSubmit={handlerOnSubmit}>
-        <div>
-          Name: {" "}
-          <input 
-            value={newName} 
-            onChange={({target}) => setNewName(target.value)}  
-          />
-        </div>
-        <div>
-          Number: {" "}
-          <input 
-            value={newNumber} 
-            onChange={({target}) => setNewNumber(target.value)}  
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm
+        onSubmit={handlerSubmit} 
+        name={newName}
+        number={newNumber}
+        onChangeName={({target}) => setNewName(target.value)}
+        onChangeNumber={({target}) => setNewNumber(target.value)}
+      />
 
-      <Contacts persons={personsToShow}/>
+      <Persons persons={personsToShow}/>
     </div>
   );
 };
-
-
-const Contacts = ({persons}) => {
-
-  return(
-    <>
-      <h2>Numbers</h2>
-
-      {persons.map(person => 
-        <p key={person.id}> 
-          {person.name} {person.number}
-        </p>
-      )}
-    </>
-  )
-}
 
 export default App;
