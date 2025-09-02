@@ -27,9 +27,9 @@ const Contact = ({person, onDelete}) => {
 
     personService
       .deleteById(id)
-      .then(({data}) => {
+      .then(deletedPerson => {
         onDelete();
-        window.alert(`${data.name} was deleted`);
+        window.alert(`${deletedPerson.name} was deleted`);
       })
   }
 

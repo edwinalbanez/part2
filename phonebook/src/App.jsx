@@ -31,15 +31,33 @@ const App = () => {
   const handlerSubmit = (event) => {
     event.preventDefault();
 
-    if (newName.trim() === "" || newNumber.trim() === "") {
+    const someEmptyField = newName.trim() === "" || newNumber.trim() === "";
+
+    if (someEmptyField) {
       window.alert("Complete all fields");
       return
     }
 
-    const repeatedPerson = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
+    const repeatedPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
 
     if (repeatedPerson) {
-      window.alert(`${newName} is already in your contacts`);
+      const confirmUpdate = window.confirm(
+        `${newName} is already in your contacts, update the number?`
+      );
+      
+      if (!confirmUpdate) {
+        return;
+      }
+      
+      personService
+        .update(repeatedPerson.id, {...repeatedPerson, number: newNumber})
+        .then(updatedPerson => {
+          setPersons(
+            persons.map(person => person.id === updatedPerson.id ? updatedPerson : person)
+          )
+          window.alert(`${updatedPerson.name} has a new number`);
+        })
+
       return;
     }
 
