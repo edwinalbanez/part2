@@ -22,7 +22,11 @@ const App = () => {
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(filter));
   
-  const handleChangeFilter = ({target}) => setFilter(target.value.toLowerCase());
+  const handleFilterChange = ({target}) => setFilter(target.value.toLowerCase());
+
+  const handleDeletePerson = (id) => {
+    setPersons(persons.filter(person => person.id !== id))
+  }
 
   const handlerSubmit = (event) => {
     event.preventDefault();
@@ -54,7 +58,7 @@ const App = () => {
 
       <Filter 
         filter={filter}
-        onChange={handleChangeFilter}
+        onChange={handleFilterChange}
       />
 
       <PersonForm
@@ -65,7 +69,9 @@ const App = () => {
         onChangeNumber={({target}) => setNewNumber(target.value)}
       />
 
-      <Persons persons={personsToShow}/>
+      <Persons 
+        persons={personsToShow} 
+        onDelete={handleDeletePerson} />
     </div>
   );
 };
