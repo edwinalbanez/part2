@@ -1,5 +1,3 @@
-import personService from "../services/persons";
-
 const Persons = ({ persons, onDelete }) => {
   return (
     <>
@@ -9,7 +7,7 @@ const Persons = ({ persons, onDelete }) => {
         <Contact 
           key={person.id} 
           person={person}
-          onDelete={() => onDelete(person.id)}
+          onDelete={() => onDelete(person.id, person.name)}
         />
       )}
     </>
@@ -18,25 +16,10 @@ const Persons = ({ persons, onDelete }) => {
 
 const Contact = ({person, onDelete}) => {
 
-  const handleClick = (id) => {
-    const confirmDelete = window.confirm(`Delete ${person.name}?`);
-
-    if (!confirmDelete) {
-      return;
-    }
-
-    personService
-      .deleteById(id)
-      .then(deletedPerson => {
-        onDelete();
-        window.alert(`${deletedPerson.name} was deleted`);
-      })
-  }
-
   return(
     <p>
       {person.name} {person.number}
-      <button onClick={() => handleClick(person.id)}>Delete</button>
+      <button onClick={onDelete}>Delete</button>
     </p>
   )
 }

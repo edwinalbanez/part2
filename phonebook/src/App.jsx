@@ -3,14 +3,15 @@ import personService from "./services/persons"
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons"
+import Notification from "./components/Notification"
 
 const App = () => {
   
   const [persons, setPersons] = useState([]);
-
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [message, setMessage] = useState({text: null});
 
   useEffect(() => {
     personService
@@ -24,9 +25,10 @@ const App = () => {
   
   const handleFilterChange = ({target}) => setFilter(target.value.toLowerCase());
 
-  const handleDeletePerson = (id) => {
-    setPersons(persons.filter(person => person.id !== id))
-  }
+  const createMessage = (text, success = true) => {
+    setMessage({text, success});
+    setTimeout(() => setMessage({text: null}), 3000);
+  };
 
   const handlerSubmit = (event) => {
     event.preventDefault();
@@ -34,8 +36,8 @@ const App = () => {
     const someEmptyField = newName.trim() === "" || newNumber.trim() === "";
 
     if (someEmptyField) {
-      window.alert("Complete all fields");
-      return
+      createMessage("Complete all fields.", false);
+      return;
     }
 
     const repeatedPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
@@ -54,8 +56,13 @@ const App = () => {
         .then(updatedPerson => {
           setPersons(
             persons.map(person => person.id === updatedPerson.id ? updatedPerson : person)
-          )
-          window.alert(`${updatedPerson.name} has a new number`);
+          );
+          setNewName("");
+          setNewNumber("");
+          createMessage(`Updated ${updatedPerson.name}'s number.`);
+        })
+        .catch(() => {
+          createMessage(`${repeatedPerson.name}'s number could not be updated.`, false);
         })
 
       return;
@@ -67,12 +74,45 @@ const App = () => {
         setPersons(persons.concat(newPerson))
         setNewName("");
         setNewNumber("");
+        createMessage(`${newPerson.name} has been added.`);
+      })
+      .catch(() => {
+        createMessage(`Could not add ${newName}`);
+      })
+  }
+
+  const handleDeletePerson = (id, name) => {
+
+    const confirmDelete = window.confirm(`Delete ${name}?`);
+    
+    if (!confirmDelete) {
+      return;
+    }
+
+    personService
+      .deleteById(id)
+      .then(deletedPerson => {
+        setPersons(persons.filter(person => person.id !== id));
+        createMessage(`${deletedPerson.name} was removed from contacts.`, false);
+      })
+      .catch(error => {
+
+        if (error.status === 404) {
+          setPersons(persons.filter(person => person.id !== id));
+          createMessage(`${name} has already been removed from contacts.`, false);
+          return;
+        }
+
+        createMessage(`The information of ${name} could not be deleted`, false);
+        
       })
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
+
+      <Notification message={message} />
 
       <Filter 
         filter={filter}
