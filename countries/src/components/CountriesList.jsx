@@ -1,3 +1,5 @@
+import CountryItem from "./CountryItem";
+
 const CountriesList = ({countries}) => {
 
   if (!countries || countries.length === 0) {
@@ -44,10 +46,7 @@ const CountriesList = ({countries}) => {
     return (
       <div>
         {countries.map(country => 
-
-          <p key={country.name.common}> 
-            {country.name.common} 
-          </p>
+          <CountryItem key={country.cca3} country={country} />
         )}
       </div>
     )

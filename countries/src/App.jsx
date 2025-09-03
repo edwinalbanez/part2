@@ -28,7 +28,11 @@ function App() {
   return (
     <>
       Find countries: {" "}
-      <input onChange={handleSearch} type="text" />
+      <input 
+        onChange={handleSearch} 
+        type="search"
+        disabled={!countries}
+      />
 
       <CountriesList countries={countriesToShow}/>
     </>
