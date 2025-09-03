@@ -17,7 +17,6 @@ const CountryItem = ({country}) => {
       {showInfo && 
         <CountryInfo country={country}/>
       }
-
     </div>
   )
 }
