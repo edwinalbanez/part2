@@ -1,6 +1,6 @@
-import axios from "axios"
 import { useState, useEffect } from "react";
 import CountriesList from "./components/CountriesList";
+import countriesService from "./services/countries";
 
 function App() {
 
@@ -8,11 +8,9 @@ function App() {
   const [filter, setFilter] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
-      .then(({ data }) => {
-        setCountries(data);
-      });
+    countriesService
+      .getAll()
+      .then(data => setCountries(data));
     
   }, [])
 
